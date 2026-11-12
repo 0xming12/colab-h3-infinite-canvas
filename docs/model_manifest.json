@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-11",
+  "source": "https://huggingface.co/Comfy-Org/MiniMax-H3",
+  "quantization": "int8_convrot",
+  "model_bytes_total": 44426778463,
+  "files": [
+    {
+      "path": "diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+      "bytes": 20970379616
+    },
+    {
+      "path": "text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "bytes": 15687142551
+    },
+    {
+      "path": "vae/minimax_h3_video_vae_fp16.safetensors",
+      "bytes": 5207808496
+    },
+    {
+      "path": "vae/minimax_h3_audio_vae_fp32.safetensors",
+      "bytes": 605254808
+    },
+    {
+      "path": "loras/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors",
+      "bytes": 1956192992
+    }
+  ],
+  "comfyui": {
+    "version": "0.45.0",
+    "commit": "4d64a8bc072b81c9b47321789b4d83fb7348ae2a"
+  },
+  "ComfyUI_essentials": {
+    "commit": "9d9f4bedfc9f0321c19faf71855e228c93bd0dc9"
+  },
+  "python": "3.13.16",
+  "pytorch": "2.14.1+cu130",
+  "cuda": "13.0",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "model_revision": "54472221d27c695fca9621b0c3ed52f06c4af707"
+}
