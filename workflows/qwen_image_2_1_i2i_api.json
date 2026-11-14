@@ -1,0 +1,87 @@
+{
+  "1": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    },
+    "_meta": {
+      "title": "select_models_diffusion_models"
+    }
+  },
+  "2": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    }
+  },
+  "3": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+    }
+  },
+  "4": {
+    "class_type": "PrimitiveStringMultiline",
+    "inputs": {
+      "value": "Keep the subject, composition and lighting in <image1>; change the background to a cinematic sunrise."
+    },
+    "_meta": {
+      "title": "prompt"
+    }
+  },
+  "5": {
+    "class_type": "TextEncodeQwenImage21",
+    "inputs": {
+      "clip": ["2", 0],
+      "prompt": ["4", 0],
+      "negative_prompt": "",
+      "vae": ["3", 0],
+      "resolution": 1024,
+      "images.image_1": ["10", 0]
+    }
+  },
+  "7": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["1", 0],
+      "positive": ["5", 0],
+      "negative": ["5", 1],
+      "latent_image": ["5", 2],
+      "seed": 12345,
+      "steps": 25,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["7", 0],
+      "vae": ["3", 0]
+    }
+  },
+  "9": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "Qwen-Image-2.1-Edit",
+      "images": ["8", 0]
+    },
+    "_meta": {
+      "title": "output_image"
+    }
+  },
+  "10": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "qwen_i2i_reference.png"
+    },
+    "_meta": {
+      "title": "ref_image_01"
+    }
+  }
+}

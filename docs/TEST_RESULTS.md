@@ -1,5 +1,7 @@
 # 已有真实推理记录
 
+本页表格均为原 **4 步 H3** 的历史实测。新增 8 步 H3 与 Qwen-Image-2.1 的准备和未测边界见 [升级流程](UPGRADE_8STEP_QWEN.md)；不要将下方耗时、显存或画质结果套用到新工作流。
+
 2026-11-11 在 NVIDIA A100-SXM4-80GB、ComfyUI 0.45.0、PyTorch 2.14.1+cu130 上运行。使用 MiniMax H3 `int8_convrot` 主模型、Qwen3-VL NVFP4 AWQ 文本编码器、Video VAE、Audio VAE 与 4 步 Turbo LoRA。`/prompt` 返回 200、`node_errors` 为空，`/history` 显示执行成功。生成的 MP4 在原环境与 Mac 上通过 `ffprobe` 核对，并完成全片解码。
 
 | 指标 | 5 秒工作流 | 10 秒工作流 |

@@ -154,6 +154,7 @@ FILES = [
     ("vae/minimax_h3_video_vae_fp16.safetensors", 4.85),
     ("vae/minimax_h3_audio_vae_fp32.safetensors", 0.564),
     ("loras/minimax_h3_fl2v_turbo_4step_v1.0_768p_comfyui_bf16.safetensors", 1.822),
+    ("loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors", 1.822),
 ]
 def complete(path, gib):
     return os.path.isfile(path) and os.path.getsize(path) >= gib * 2**30 * 0.97
@@ -173,6 +174,33 @@ for rel, gib in FILES:
     if not os.path.exists(link):
         os.symlink(dst, link)
     print("就绪：", rel)
+
+# Qwen-Image-2.1 按需下载，避免只用 H3 时额外占用磁盘和网络。
+if os.environ.get("ENABLE_QWEN_IMAGE21") == "1":
+    QWEN_REPO = "Comfy-Org/Qwen-Image-2.1"
+    QWEN_REVISION = "aacf31a6d48e707f352ecba714cee0680da3479b"
+    QWEN_FILES = [
+        ("diffusion_models/qwen_image_2.1_int8_convrot.safetensors", 7256783064),
+        ("text_encoders/qwen3vl_8b_int8_convrot.safetensors", 9350798360),
+        ("vae/qwen_image_2.1_vae_bf16.safetensors", 675509688),
+    ]
+    for rel, size in QWEN_FILES:
+        dst = os.path.join(MODELS_DIR, rel)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        if not (os.path.isfile(dst) and os.path.getsize(dst) == size):
+            saved = os.path.join(DRIVE_ROOT, "models", rel) if DRIVE_ROOT else None
+            if saved and os.path.isfile(saved) and os.path.getsize(saved) == size:
+                print("从 Drive 恢复：", rel, flush=True)
+                shutil.copy2(saved, dst)
+            else:
+                print("下载官方权重：", rel, flush=True)
+                hf_hub_download(repo_id=QWEN_REPO, filename=rel,
+                                revision=QWEN_REVISION, local_dir=MODELS_DIR)
+        assert os.path.getsize(dst) == size, "权重大小不匹配：" + rel
+        link = os.path.join(COMFY_DIR, "models", rel)
+        if not os.path.exists(link):
+            os.symlink(dst, link)
+        print("就绪：", rel)
 
 # ===== Notebook cell 5 =====
 # 单元 5：复用或启动仅本机可访问的 ComfyUI
@@ -239,3 +267,5 @@ for d in st.get("devices", []):
     print("设备: %s | 显存总量 %.1f GB | 空闲 %.1f GB" % (
         d.get("name"), d.get("vram_total", 0) / 2**30, d.get("vram_free", 0) / 2**30))
 assert not missing, "缺少必需节点：" + ", ".join(missing)
+if os.environ.get("ENABLE_QWEN_IMAGE21") == "1":
+    assert "TextEncodeQwenImage21" in have, "当前 ComfyUI 缺少 Qwen-Image-2.1 编码节点"

@@ -10,10 +10,11 @@
 
 - **云端 GPU 加速**：利用 Google Colab A100 运行 MiniMax H3 视频生成模型。
 - **无限画布创作**：接入 Infinite Canvas，以可视化方式组织素材和视频生成任务。
-- **ComfyUI 工作流**：提供经过独立推理验证的 5 秒、10 秒视频生成工作流，支持 4 步 Turbo LoRA。
+- **ComfyUI 工作流**：提供经过独立推理验证的 5 秒、10 秒视频生成工作流，支持 4 步 Turbo LoRA；另有新增的 8 步 Turbo LoRA 版本供对比。
 - **原生音视频生成**：独立测试已成功输出包含 AAC 音轨的 MP4 视频。
+- **文生图 / 图生图接视频**：新增 Qwen-Image-2.1 INT8 工作流，可在画布内先出图、再把图片接入首尾帧视频节点。
 - **环境快速恢复**：提供自动安装、模型恢复和服务启动脚本，减少重复部署工作。
-- **Google Drive 存储**：支持模型权重持久化，并提供视频备份脚本。
+- **Google Drive 存储**：支持模型权重持久化，并提供视频与新增权重的备份脚本。
 - **安全远程连接**：通过官方 Colab CLI SSH 隧道连接，无需暴露公网 ComfyUI 接口。
 
 ## 🚀 已验证效果
@@ -51,6 +52,8 @@ Open Source · Cloud GPU · ComfyUI · MiniMax H3 · Infinite Canvas
 
 完整操作按 [日常使用流程](docs/RUNBOOK.md) 从头进行。先看 [实测记录](docs/TEST_RESULTS.md) 和 [限制](docs/CONNECT.md)，不要把用户确认的画布生成写成已核验的 10 秒 720P 画布成片。
 
+**新增部署：**[8 步 H3 + Qwen-Image-2.1 生图、图生图接视频](docs/UPGRADE_8STEP_QWEN.md)。权重已安装、Drive 备份校验通过，画布文生图、图生图与首尾帧视频的默认工作流已配置；8 步视频和 Qwen 生成效果由用户测试。
+
 ## 内容
 
 ```text
@@ -60,9 +63,13 @@ scripts/restore_colab.py          从 Drive 恢复模型、安装并启动 Comfy
 scripts/connect_colab_h3.sh       只连接已有单个 CLI 会话的本地 SSH 隧道
 scripts/check_connection.py       不发起推理的 HTTP、CORS、WebSocket 检查
 scripts/backup_outputs.py         将新 MP4 校验后备份到已挂载 Drive（尚未现场验收）
+scripts/backup_new_models.py      校验并备份新增的 H3/Qwen 权重（尚未现场验收）
 patches/infinite-canvas-workflow-studio.patch  修复 v0.25.0 工作流工坊导入
 workflows/h3_5s_api.json          已独立推理的 5 秒工作流
 workflows/h3_10s_720p_api.json   已独立推理的 10 秒工作流
+workflows/h3_*_8step_api.json     待实测的 8 步 H3 工作流
+workflows/qwen_image_2_1_t2i_api.json  待实测的 Qwen 生图工作流
+workflows/qwen_image_2_1_i2i_api.json  待实测的 Qwen 单参考图编辑工作流
 docs/RUNBOOK.md                   从启动到备份、停止的逐步流程
 docs/CONNECT.md                   安全连接原理及验收边界
 docs/TEST_RESULTS.md              实测指标
